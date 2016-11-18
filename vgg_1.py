@@ -24,7 +24,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "cnn18" #used for logging purposes
+modelname = "vgg1" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -96,7 +96,7 @@ model.add(Dense(10, activation='softmax'))
 
 # ************************LOAD WEIGHTS*************************
 
-model.load_weights("weights/cnn10.hdf5", by_name=False)
+#model.load_weights("weights/cnn10.hdf5", by_name=False)
 
 # ***********************************************************************
 

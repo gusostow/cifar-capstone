@@ -21,7 +21,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "ffn39" #used for logging purposes
+modelname = "ffn41" #used for logging purposes
 # **************************************************************************
 
 
@@ -62,33 +62,32 @@ with open('./models/ffn19.json', 'rb') as fp:
 model = model_from_json(saved_model)
 """
 
-l2_lambda = .0002
 
 #define model
 model = Sequential()
 model.add(Dense(512, input_dim=3072))
-model.add(BatchNormalization())
+#model.add(BatchNormalization())
 model.add(Activation("relu"))
 #model.add(Dropout(0.02))
 
 model.add(Dense(512))
-model.add(BatchNormalization())
+#model.add(BatchNormalization())
 model.add(Activation("relu"))
 #model.add(Dropout(0.02))
 
 model.add(Dense(512))
-model.add(BatchNormalization())
+#model.add(BatchNormalization())
 model.add(Activation("relu"))
 #model.add(Dropout(0.02))
 
 model.add(Dense(10))
-model.add(BatchNormalization())
+#model.add(BatchNormalization())
 model.add(Activation("softmax"))
 
 
 # COMPILE
-epochs = 50
-lrate = 0.5
+epochs = 30
+lrate = 0.01
 decay = lrate/epochs
 sgd = SGD(lr=lrate, decay = decay,momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)

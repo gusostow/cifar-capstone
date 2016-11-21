@@ -20,11 +20,12 @@ from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg1" #used for logging purposes
+modelname = "vgg7.1" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -42,46 +43,21 @@ y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
 #CALLBACKS
-board = keras.callbacks.TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
+board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
+checkpoint = ModelCheckpoint("weights/" + modelname + ".hdf5", monitor='val_acc', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
+early = EarlyStopping(monitor='val_acc', min_delta=0, patience=5, verbose=0, mode='auto')
 csv = CSVHistory("csv_logs/log_cnn_v1.csv", modelname, separator = " , ", append = True)
 
 #DEFINE MODEL
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
+model.add(Convolution2D(32,3,3))
+model.add(Activation("relu"))
+
+model.add(MaxPooling2D((2,2), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(64,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256,3,3))
-model.add(Activation("relu"))
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512,3,3))
-model.add(Activation("relu"))
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512,3,3))
-model.add(Activation("relu"))
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
@@ -96,18 +72,18 @@ model.add(Dense(10, activation='softmax'))
 
 # ************************LOAD WEIGHTS*************************
 
-#model.load_weights("weights/cnn10.hdf5", by_name=False)
+model.load_weights("weights/vgg7.hdf5", by_name=False)
 
 # ***********************************************************************
 
 # COMPILE
-epochs = 50
+epochs = 30
 batch_size = 32
-lrate = 0.01
-decay = lrate/epochs
-sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
+lrate = 0.0001
+sgd = SGD(lr=lrate, decay = 0.0, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+
 data_augmentation = True
 
 print model.summary()
@@ -121,7 +97,7 @@ with open("summaries/" + modelname + '.txt', 'w') as f:
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board,checkpoint,early,  csv])
 else:
     print 'Using real-time data augmentation.'
 

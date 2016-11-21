@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg7.1" #used for logging purposes
+modelname = "vgg9" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -44,45 +44,50 @@ num_classes = y_test.shape[1]
 
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
-checkpoint = ModelCheckpoint("weights/" + modelname + ".hdf5", monitor='val_acc', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
-early = EarlyStopping(monitor='val_acc', min_delta=0, patience=5, verbose=0, mode='auto')
+
+filepath="weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+filepath1 = "weights/" + modelname + ".hdf5"
+
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max')
+#early = EarlyStopping(monitor='val_acc', min_delta=0, patience=5, verbose=0, mode='auto')
 csv = CSVHistory("csv_logs/log_cnn_v1.csv", modelname, separator = " , ", append = True)
 
 #DEFINE MODEL
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
-model.add(Convolution2D(32,3,3))
+model.add(Convolution2D(64,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(64,3,3))
+model.add(Convolution2D(128,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
 
-model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
 # ************************LOAD WEIGHTS*************************
 
-model.load_weights("weights/vgg7.hdf5", by_name=False)
+#model.load_weights("weights/vgg7.hdf5", by_name=False)
 
 # ***********************************************************************
 
 # COMPILE
-epochs = 30
+epochs = 50
 batch_size = 32
-lrate = 0.0001
-sgd = SGD(lr=lrate, decay = 0.0, momentum = 0.9, nesterov=True)
+lrate = 0.01
+decay = lrate / epochs
+sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 data_augmentation = True
 
@@ -97,7 +102,7 @@ with open("summaries/" + modelname + '.txt', 'w') as f:
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board,checkpoint,early,  csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, checkpoint, csv])
 else:
     print 'Using real-time data augmentation.'
 

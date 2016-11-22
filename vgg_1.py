@@ -50,7 +50,7 @@ filepath = "weights/" + modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
-csv = CSVHistory("csv_logs/" + modelname, separator = " , ", append = True)
+csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
 
 #DEFINE MODEL
 model = Sequential()

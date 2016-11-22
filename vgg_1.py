@@ -38,7 +38,6 @@ X_test = X_test.astype("float32")
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
-np.random.randint()
 
 #one hot encode outputs
 y_train = np_utils.to_categorical(y_train)

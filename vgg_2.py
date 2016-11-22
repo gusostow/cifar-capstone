@@ -45,11 +45,9 @@ num_classes = y_test.shape[1]
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 
-filepath="weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
-filepath1 = "weights/" + modelname + ".hdf5"
+filepath = "weights/" + modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max')
-#early = EarlyStopping(monitor='val_acc', min_delta=0, patience=5, verbose=0, mode='auto')
 csv = CSVHistory("csv_logs/log_cnn_v1.csv", modelname, separator = " , ", append = True)
 
 #DEFINE MODEL
@@ -132,7 +130,5 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv])
+                            callbacks = [board, csv, checkpoint])
 
-
-model.save_weights("weights/" + modelname + ".hdf5")

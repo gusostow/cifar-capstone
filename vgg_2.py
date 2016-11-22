@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg9" #used for logging purposes
+modelname = "vgg2_1" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -46,7 +46,7 @@ num_classes = y_test.shape[1]
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 
 filepath = "weights/" + modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
+#checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
 csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
 
@@ -130,5 +130,6 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv, checkpoint])
+                            callbacks = [board, csv])
 
+model.save_weights("weights/" + modelname + "_{val_acc:.2f}" + ".hdf5")

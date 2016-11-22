@@ -6,7 +6,7 @@ import keras
 from keras.datasets import cifar10
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
-from custom_augmentation import image_alt
+
 
 from keras.optimizers import SGD
 from keras.regularizers import l2, activity_l2
@@ -22,12 +22,15 @@ from keras.constraints import maxnorm
 from keras.layers.convolutional import Convolution2D
 from keras.layers.convolutional import MaxPooling2D
 
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 #custom csv logger callback
 from custom_callbacks.customcalls import CSVHistory
 
+from quiver_engine.server import launch
+
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "cnn18" #used for logging purposes
+modelname = "cnn19" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -45,8 +48,10 @@ y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
 #CALLBACKS
-board = keras.callbacks.TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
+board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 csv = CSVHistory("csv_logs/log_cnn_v1.csv", modelname, separator = " , ", append = True)
+filepath = modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
 # ************************LOAD A MODEL FROM JSON*************************
 """
@@ -75,9 +80,11 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation("softmax"))
 
+#quiver_engine.server.launch(model, classes=['cat','dog'], input_folder='./imgs')
+
 # ************************LOAD WEIGHTS*************************
 
-model.load_weights("weights/cnn10.hdf5", by_name=False)
+#model.load_weights("weights/cnn10.hdf5", by_name=False)
 
 # ***********************************************************************
 
@@ -102,7 +109,7 @@ with open("summaries/" + modelname + '.txt', 'w') as f:
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [checkpoint])
 else:
     print 'Using real-time data augmentation.'
 
@@ -123,7 +130,7 @@ else:
 
     model.fit_generator(datagen.flow(X_train, y_train,
                             batch_size=batch_size),
-                            samples_per_epoch=X_train.shape[0],
+                            samples_per_epoch=500,
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
                             callbacks = [board, csv])

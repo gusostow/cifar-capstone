@@ -26,7 +26,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg12" #used for logging purposes
+modelname = "vgg14" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -45,13 +45,11 @@ y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
 #CALLBACKS
+
+filepath = modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
+
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
-
-filepath="weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
-filepath1 = "weights/" + modelname + ".hdf5"
-
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max')
-#early = EarlyStopping(monitor='val_acc', min_delta=0, patience=5, verbose=0, mode='auto')
 csv = CSVHistory("csv_logs/log_cnn_v1.csv", modelname, separator = " , ", append = True)
 
 #DEFINE MODEL
@@ -87,7 +85,7 @@ epochs = 50
 batch_size = 32
 lrate = 0.01
 decay = lrate / epochs
-sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
+sgd = SGD(lr=lrate, decay = 0, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
@@ -128,8 +126,7 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv])
+                            callbacks = [board, csv, checkpoint])
 
 
-model.save_weights("weights/" + modelname + ".hdf5")
 

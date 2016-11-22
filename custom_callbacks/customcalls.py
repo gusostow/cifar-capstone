@@ -96,3 +96,6 @@ class LRdecay(keras.callbacks.Callback):
     def __init__(self, decay):
         super(LRdecay, self).__init__()
         self.decay = decay
+
+    def on_epoch_end(self, epoch, logs={}):
+

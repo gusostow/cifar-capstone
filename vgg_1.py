@@ -26,7 +26,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg15.1" #used for logging purposes
+modelname = "vgg15.2" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -76,14 +76,14 @@ model.add(Dense(10, activation='softmax'))
 
 # ************************LOAD WEIGHTS*************************
 
-model.load_weights("weights/vgg15_19-0.74.hdf5", by_name=False)
+model.load_weights("weights/vgg15.1_09-0.77.hdf5", by_name=False)
 
 # ***********************************************************************
 
 # COMPILE
 epochs = 30
 batch_size = 32
-lrate = 0.001
+lrate = 0.0001
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = 0, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)

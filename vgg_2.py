@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg2_1" #used for logging purposes
+modelname = "vgg2_2" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()

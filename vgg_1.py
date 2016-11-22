@@ -76,14 +76,14 @@ model.add(Dense(10, activation='softmax'))
 
 # ************************LOAD WEIGHTS*************************
 
-#model.load_weights("weights/vgg7.hdf5", by_name=False)
+model.load_weights("weights/vgg15_19-0.74.hdf5", by_name=False)
 
 # ***********************************************************************
 
 # COMPILE
-epochs = 50
+epochs = 30
 batch_size = 32
-lrate = 0.01
+lrate = 0.001
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = 0, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)

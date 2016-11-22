@@ -26,7 +26,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg11" #used for logging purposes
+modelname = "vgg12" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -37,6 +37,7 @@ X_test = X_test.astype("float32")
 
 X_train = X_train / 255.0
 X_test = X_test / 255.0
+
 
 #one hot encode outputs
 y_train = np_utils.to_categorical(y_train)

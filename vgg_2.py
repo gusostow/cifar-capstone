@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg2_2" #used for logging purposes
+modelname = "vgg2_3" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -53,12 +53,6 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
-model.add(Convolution2D(32,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(64,3,3))
 model.add(Activation("relu"))
 
@@ -70,11 +64,17 @@ model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
+model.add(ZeroPadding2D((1,1)))
+model.add(Convolution2D(256,3,3))
+model.add(Activation("relu"))
+
+model.add(MaxPooling2D((2,2), strides=(2,2)))
+
 model.add(Flatten())
 
-model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 

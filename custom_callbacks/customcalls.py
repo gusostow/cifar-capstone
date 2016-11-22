@@ -98,4 +98,4 @@ class LRdecay(keras.callbacks.Callback):
         self.decay = decay
 
     def on_epoch_end(self, epoch, logs={}):
-
+        pass

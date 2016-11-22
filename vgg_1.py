@@ -38,8 +38,6 @@ X_test = X_test.astype("float32")
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
-np.random.randint()
-
 #one hot encode outputs
 y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
@@ -71,9 +69,9 @@ model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
 
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
@@ -116,7 +114,7 @@ else:
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=False,  # apply ZCA whitening
-        rotation_range=15,  # randomly rotate images in the range (degrees, 0 to 180)
+        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images

@@ -85,3 +85,14 @@ class CSVHistory(keras.callbacks.Callback):
 
     def on_train_end(self, logs={}):
         self.csv_file.close()
+
+class LRdecay(keras.callbacks.Callback):
+    '''LRdecay
+    # Arguments
+        DECAY: float (0,1] to be multiplied by the current learn rate when the specified training metric stops improving.
+        METRIC: "val_acc" or "val_loss"
+
+    '''
+    def __init__(self, decay):
+        super(LRdecay, self).__init__()
+        self.decay = decay

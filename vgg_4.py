@@ -70,12 +70,6 @@ model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512,3,3))
-model.add(Activation("relu"))
-
-
-
 model.add(Flatten())
 
 model.add(Dense(1024, activation='relu'))

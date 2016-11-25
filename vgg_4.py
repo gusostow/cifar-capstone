@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg4_2" #used for logging purposes
+modelname = "vgg4_3" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -57,6 +57,10 @@ model.add(Convolution2D(64,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
+model.add(Convolution2D(128,3,3))
+model.add(Activation("relu"))
 
 model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(128,3,3))

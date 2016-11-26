@@ -53,19 +53,19 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
-model.add(Convolution2D(64,3,3), init = "glorot_normal")
+model.add(Convolution2D(64,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128,3,3), init = "glorot_normal")
+model.add(Convolution2D(128,3,3, init = "glorot_normal))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256,3,3), init = "glorot_normal")
+model.add(Convolution2D(256,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))

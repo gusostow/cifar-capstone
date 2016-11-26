@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg2_4" #used for logging purposes
+modelname = "vgg2_5" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -53,19 +53,19 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
-model.add(Convolution2D(64,3,3))
+model.add(Convolution2D(64,3,3), init = "glorot_normal")
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128,3,3))
+model.add(Convolution2D(128,3,3), init = "glorot_normal")
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256,3,3))
+model.add(Convolution2D(256,3,3), init = "glorot_normal")
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
@@ -132,4 +132,4 @@ else:
                             validation_data=(X_test, y_test),
                             callbacks = [board, csv])
 
-model.save_weights("weights/" + modelname + "_{val_acc:.2f}" + ".hdf5")
+model.save_weights("weights/" + modelname + ".hdf5")

@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "strd_2" #used for logging purposes
+modelname = "vgg2_6" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -52,21 +52,25 @@ model = Sequential()
 model.add(ZeroPadding2D((1,1), input_shape=(32,32,3)))
 model.add(Convolution2D(96,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
+model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(96,3,3, init = "glorot_normal")) #32 x 32 x 96
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))
 
+model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(192,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
+model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(192,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
 model.add(Convolution2D(192,3,3, init = "glorot_normal"))
 model.add(Activation("relu"))
 
-model.add(Flatten())
 model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1024, activation='relu'))
@@ -80,7 +84,7 @@ lrate = 0.01
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 data_augmentation = True
 

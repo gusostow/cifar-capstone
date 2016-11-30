@@ -66,6 +66,8 @@ model.add(MaxPooling2D((3,3), strides=(2,2)))
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
+model.add(Flatten())
+
 model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1024, activation='relu'))

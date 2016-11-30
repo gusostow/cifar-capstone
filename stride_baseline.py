@@ -49,7 +49,7 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Convolution2D(64, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
+model.add(Convolution2D(96, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
 model.add(Activation("relu"))
 model.add(Convolution2D(96,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))

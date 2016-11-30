@@ -114,7 +114,7 @@ adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, 
 
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-data_augmentation = True
+data_augmentation = False
 
 print model.summary()
 

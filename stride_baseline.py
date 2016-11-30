@@ -58,12 +58,14 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Convolution2D(96, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
+model.add(Dropout(0.20, input_shape=X_train.shape[1:]))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 model.add(Convolution2D(96,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((3, 3), strides=(2,2)))
+model.add(Dropout(0.5))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
@@ -71,6 +73,7 @@ model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))
+model.add(Dropout(0.5))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
@@ -87,7 +90,7 @@ model.add(Activation("softmax"))
 #Learning rate schedule (as per "striving for simplicity" paper)
 def scheduler(epoch):
 
-    initial_lr = 0.01
+    initial_lr = 0.05
     if epoch <= 200:
         lr = initial_lr
     elif epoch <= 250:
@@ -105,7 +108,7 @@ change_lr = LearningRateScheduler(scheduler)
 epochs = 100
 batch_size = 32
 
-sgd = SGD(lr=0.05, decay = 0, momentum = 0.9, nesterov=False)
+sgd = SGD(lr=0, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 

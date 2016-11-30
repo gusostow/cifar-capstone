@@ -49,7 +49,7 @@ train_sub_ind = np.random.choice(X_train.shape[0], 5000, replace = False)
 
 #SUBSET TRAINING SET
 #X_train = X_train[train_sub_ind, :]
-y#_train = y_train[train_sub_ind, :]
+#y_train = y_train[train_sub_ind, :]
 
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)

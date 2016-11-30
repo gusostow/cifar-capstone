@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 import json
 from contextlib2 import redirect_stdout
 
@@ -18,9 +19,10 @@ from keras.layers.core import Activation
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
+from keras.layers.pooling import GlobalAveragePooling2D
 from keras.constraints import maxnorm
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
+from keras.callbacks import TensorBoard, LearningRateScheduler
 from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
@@ -42,6 +44,13 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
+#subset training data
+train_sub_ind = np.random.choice(X_train.shape[0], 5000, replace = False)
+
+#SUBSET TRAINING SET
+X_train = X_train[train_sub_ind, :]
+y_train = y_train[train_sub_ind, :]
+
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
@@ -54,7 +63,7 @@ model.add(Activation("relu"))
 model.add(Convolution2D(96,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D((3, 3), strides=(2,2)))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
@@ -63,19 +72,40 @@ model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
-model.add(Flatten())
+model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
+model.add(Activation("relu"))
 
-model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(10, activation='softmax'))
+model.add(Convolution2D(192,1,1, border_mode='same', init = "glorot_normal"))
+model.add(Activation("relu"))
+model.add(Convolution2D(10,1,1, border_mode='same', init = "glorot_normal"))
+model.add(Activation("relu"))
+
+model.add(GlobalAveragePooling2D())
+model.add(Activation("softmax"))
+
+
+#Learning rate schedule (as per "striving for simplicity" paper)
+def scheduler(epoch):
+    if epoch < 3:
+        lr = 0.01
+    elif epoch < 4:
+        lr = 0.001
+    else:
+        lr = 0.0001
+    return lr
+
+#create callback
+change_lr = LearningRateScheduler(scheduler)
 
 # COMPILE
 epochs = 100
 batch_size = 32
-lrate = 0.01
-decay = lrate / epochs
-sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
+
+initial_lrate = 0.01
+sgd = SGD(lr=initial_lrate, decay = 0, momentum = 0.9, nesterov=False)
+
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+
 model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
 
 data_augmentation = True
@@ -91,7 +121,7 @@ with open("summaries/" + modelname + '.txt', 'w') as f:
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, checkpoint, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, csv])
 else:
     print 'Using real-time data augmentation.'
 
@@ -110,11 +140,12 @@ else:
 
     datagen.fit(X_train)
 
+    #pdb.set_trace()
     model.fit_generator(datagen.flow(X_train, y_train,
                             batch_size=batch_size),
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv])
+                            callbacks = [change_lr])
 
 model.save_weights("weights/" + modelname + ".hdf5")

@@ -70,7 +70,7 @@ model.add(Activation("relu"))
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D((3,3), strides=(2,2)))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
@@ -86,12 +86,14 @@ model.add(Activation("softmax"))
 
 #Learning rate schedule (as per "striving for simplicity" paper)
 def scheduler(epoch):
-    if epoch < 3:
+    if epoch <= 200:
         lr = 0.01
-    elif epoch < 4:
+    elif epoch <= 250:
         lr = 0.001
-    else:
+    elif epoch <= 300:
         lr = 0.0001
+    else:
+        lr = 0.00001
     return lr
 
 #create callback
@@ -101,12 +103,11 @@ change_lr = LearningRateScheduler(scheduler)
 epochs = 100
 batch_size = 32
 
-initial_lrate = 0.01
-sgd = SGD(lr=initial_lrate, decay = 0, momentum = 0.9, nesterov=False)
+sgd = SGD(lr=0, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 data_augmentation = True
 
@@ -148,4 +149,4 @@ else:
                             validation_data=(X_test, y_test),
                             callbacks = [change_lr])
 
-model.save_weights("weights/" + modelname + ".hdf5")
+#model.save_weights("weights/" + modelname + ".hdf5")

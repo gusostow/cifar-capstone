@@ -81,6 +81,7 @@ model.add(Convolution2D(10,1,1, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(GlobalAveragePooling2D())
+model.add(Flatten())
 model.add(Activation("softmax"))
 
 
@@ -109,7 +110,7 @@ sgd = SGD(lr=0.01, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 data_augmentation = True
 

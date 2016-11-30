@@ -27,7 +27,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "strd_6" #used for logging purposes
+modelname = "strd_7" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -48,8 +48,8 @@ num_classes = y_test.shape[1]
 train_sub_ind = np.random.choice(X_train.shape[0], 5000, replace = False)
 
 #SUBSET TRAINING SET
-X_train = X_train[train_sub_ind, :]
-y_train = y_train[train_sub_ind, :]
+#X_train = X_train[train_sub_ind, :]
+y#_train = y_train[train_sub_ind, :]
 
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
@@ -86,14 +86,16 @@ model.add(Activation("softmax"))
 
 #Learning rate schedule (as per "striving for simplicity" paper)
 def scheduler(epoch):
+
+    initial_lr = 0.01
     if epoch <= 200:
-        lr = 0.01
+        lr = intitial_lr
     elif epoch <= 250:
-        lr = 0.001
+        lr = initial_lr * 0.1
     elif epoch <= 300:
-        lr = 0.0001
+        lr = initial_lr * 0.01
     else:
-        lr = 0.00001
+        lr = initial_lr * 0.001
     return lr
 
 #create callback
@@ -107,7 +109,7 @@ sgd = SGD(lr=0, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 data_augmentation = True
 
@@ -147,6 +149,6 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [change_lr])
+                            callbacks = [change_lr, board, csv])
 
 #model.save_weights("weights/" + modelname + ".hdf5")

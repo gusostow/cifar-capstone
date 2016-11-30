@@ -109,7 +109,7 @@ sgd = SGD(lr=0.01, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
 
 data_augmentation = True
 

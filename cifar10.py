@@ -21,7 +21,7 @@ from keras.utils import np_utils
 batch_size = 32
 nb_classes = 10
 nb_epoch = 200
-data_augmentation = True
+data_augmentation = False
 
 # input image dimensions
 img_rows, img_cols = 32, 32
@@ -66,7 +66,7 @@ model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
 # let's train the model using SGD + momentum (how original).
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])

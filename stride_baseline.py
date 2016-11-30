@@ -127,7 +127,7 @@ print model.summary()
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [])
 else:
     print 'Using real-time data augmentation.'
 

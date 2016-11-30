@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg4_4" #used for logging purposes
+modelname = "vgg4_3" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -42,12 +42,6 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
-train_sub_ind = np.random.choice(X_train.shape[0], 10000, replace = False)
-
-#SUBSET TRAINING SET
-X_train = X_train[train_sub_ind, :]
-y_train = y_train[train_sub_ind, :]
-
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 
@@ -58,16 +52,24 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 
 #DEFINE MODEL
 model = Sequential()
-model.add(Convolution2D(32,3,3, border_mode="same", input_shape=(32,32,3)))
-model.add(Activation("relu"))
-model.add(Convolution2D(32,3,3, border_mode="same"))
+model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
+model.add(Convolution2D(64,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
-model.add(Convolution2D(64,3,3, border_mode="same"))
+model.add(ZeroPadding2D((1,1)))
+model.add(Convolution2D(128,3,3))
 model.add(Activation("relu"))
-model.add(Convolution2D(64,3,3, border_mode="same"))
+
+model.add(ZeroPadding2D((1,1)))
+model.add(Convolution2D(128,3,3))
+model.add(Activation("relu"))
+
+model.add(MaxPooling2D((2,2), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
+model.add(Convolution2D(256,3,3))
 model.add(Activation("relu"))
 
 model.add(MaxPooling2D((2,2), strides=(2,2)))

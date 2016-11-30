@@ -46,7 +46,6 @@ model.add(Convolution2D(64, 3, 3))
 model.add(Activation('relu'))
 
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
 
 model.add(Convolution2D(128, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
@@ -54,7 +53,6 @@ model.add(Convolution2D(128, 3, 3))
 model.add(Activation('relu'))
 
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(512))
@@ -66,7 +64,7 @@ model.add(Activation('softmax'))
 # let's train the model using SGD + momentum (how original).
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+              optimizer='adam',
               metrics=['accuracy'])
 
 X_train = X_train.astype('float32')

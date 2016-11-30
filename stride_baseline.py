@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "strd_5" #used for logging purposes
+modelname = "strd_6" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -65,9 +65,7 @@ model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
 
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 

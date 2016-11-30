@@ -89,7 +89,7 @@ def scheduler(epoch):
 
     initial_lr = 0.01
     if epoch <= 200:
-        lr = intitial_lr
+        lr = initial_lr
     elif epoch <= 250:
         lr = initial_lr * 0.1
     elif epoch <= 300:

@@ -105,7 +105,7 @@ change_lr = LearningRateScheduler(scheduler)
 epochs = 100
 batch_size = 32
 
-sgd = SGD(lr=0.25, decay = 0, momentum = 0.9, nesterov=False)
+sgd = SGD(lr=0.05, decay = 0, momentum = 0.9, nesterov=False)
 
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 

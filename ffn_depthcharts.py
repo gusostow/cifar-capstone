@@ -39,12 +39,26 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
-model_0, model_1, model_2, model_3, model_4, model_5, model_6 = Sequential()
+model_0 = Sequential()
+model_1 = Sequential()
+model_2 = Sequential()
+model_3 = Sequential()
+model_4 = Sequential()
+model_5 = Sequential()
+model_6 = Sequential()
 
-models = [model_0, model_1, model_2, model_3, model_4, model_5, model_6]
-modelnames = ["model_0", "model_1", "model_2", "model_3", "model_4", "model_5","model_6"]
+#models = [model_0, model_1, model_2, model_3, model_4, model_5, model_6]
+#modelnames = ["model_0", "model_1", "model_2", "model_3", "model_4", "model_5","model_6"]
 
-model_tuples = zip(models, modelnames)
+models = {"model_0": model_0,
+ "model_1": model_1,
+ "model_2": model_2,
+ "model_3": model_3,
+ "model_4": model_4,
+ "model_5": model_5,
+ "model_6": model_6}
+
+#model_tuples = zip(models, modelnames)
 
 width = 512
 
@@ -53,40 +67,40 @@ model_0.add(Dense(num_classes, input_dim=3072, activation = "softmax"))
 
 #define model_1
 model_1.add(Dense(width, input_dim=3072))
-model_1.add(Dense(num_classes), activation = "softmax")
+model_1.add(Dense(num_classes, activation = "softmax"))
 
 #define model_2
 model_2.add(Dense(width, input_dim=3072, activation = "relu"))
-model_2.add(Dense(width), activation = "relu")
-model_2.add(Dense(num_classes), activation = "softmax")
+model_2.add(Dense(width, activation = "relu"))
+model_2.add(Dense(num_classes, activation = "softmax"))
 
 #define model_3
 model_3.add(Dense(width, input_dim=3072, activation = "relu"))
-model_3.add(Dense(width), activation = "relu")
-model_3.add(Dense(width), activation = "relu")
-model_3.add(Dense(num_classes), activation = "softmax")
+model_3.add(Dense(width, activation = "relu"))
+model_3.add(Dense(width, activation = "relu"))
+model_3.add(Dense(num_classes, activation = "softmax"))
 
 #define model_4
 model_4.add(Dense(width, input_dim=3072, activation = "relu"))
-model_4.add(Dense(width), activation = "relu")
-model_4.add(Dense(width), activation = "relu")
-model_4.add(Dense(width), activation = "relu")
-model_4.add(Dense(num_classes), activation = "softmax")
+model_4.add(Dense(width, activation = "relu"))
+model_4.add(Dense(width, activation = "relu"))
+model_4.add(Dense(width, activation = "relu"))
+model_4.add(Dense(num_classes, activation = "softmax"))
 
 #define model_5
 model_5.add(Dense(width, input_dim=3072, activation = "relu"))
-model_5.add(Dense(width), activation = "relu")
-model_5.add(Dense(width), activation = "relu")
-model_5.add(Dense(width), activation = "relu")
-model_5.add(Dense(num_classes), activation = "softmax")
+model_5.add(Dense(width, activation = "relu"))
+model_5.add(Dense(width, activation = "relu"))
+model_5.add(Dense(width, activation = "relu"))
+model_5.add(Dense(num_classes, activation = "softmax"))
 
 #define model_6
 model_6.add(Dense(width, input_dim=3072, activation = "relu"))
-model_6.add(Dense(width), activation = "relu")
-model_6.add(Dense(width), activation = "relu")
-model_6.add(Dense(width), activation = "relu")
-model_6.add(Dense(width), activation = "relu")
-model_6.add(Dense(num_classes), activation = "softmax")
+model_6.add(Dense(width, activation = "relu"))
+model_6.add(Dense(width, activation = "relu"))
+model_6.add(Dense(width, activation = "relu"))
+model_6.add(Dense(width, activation = "relu"))
+model_6.add(Dense(num_classes, activation = "softmax"))
 
 # COMPILE
 epochs = 20
@@ -94,13 +108,13 @@ lrate = 0.01
 decay = lrate/epochs
 sgd = SGD(lr=lrate, decay = decay,momentum = 0.9, nesterov=False)
 
-for models, modelname in model_tuples:
-    csv = CSVHistory("csv_logs/ffn_depthcharts.csv", modelname, separator = " , ", append = False)
+for model in models:
+    csv = CSVHistory("csv_logs/ffn_depthcharts.csv", model, separator = " , ", append = False)
 
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+    models[model].compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-    print "now training", modelname
+    print "now training", model
 
-    fit = model.fit(X_train, y_train, validation_data = (X_test, y_test), nb_epoch=epochs, batch_size=32, shuffle = True, callbacks = [csv])
+    fit = models[model].fit(X_train, y_train, validation_data = (X_test, y_test), nb_epoch=epochs, batch_size=32, shuffle = True, callbacks = [csv])
 
 

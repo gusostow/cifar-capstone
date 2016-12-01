@@ -58,31 +58,20 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Dropout(0.20, input_shape=X_train.shape[1:]))
-model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
-model.add(Convolution2D(96,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
+model.add(Convolution2D(96,3,3, input_shape=X_train.shape[1:]. border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(96,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 
 model.add(MaxPooling2D((3, 3), strides=(2,2)))
-model.add(Dropout(0.5))
 
-model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
-model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))
-model.add(Dropout(0.5))
 
-model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 
-model.add(Convolution2D(192,1,1, init = "glorot_normal"))
-model.add(Activation("relu"))
-model.add(Convolution2D(10,1,1, init = "glorot_normal"))
-model.add(Activation("relu"))
-
+model.add(Convolution2D(192,1,1, init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(10,1,1, init = "orthogonal", activation = "relu"))
 model.add(GlobalAveragePooling2D())
 model.add(Activation("softmax"))
 

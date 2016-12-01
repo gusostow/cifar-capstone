@@ -17,6 +17,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from keras.layers.pooling import GlobalAveragePooling2D
 
 batch_size = 32
 nb_classes = 10
@@ -30,13 +31,16 @@ img_channels = 3
 
 # the data, shuffled and split between train and test sets
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+#X_train = X_train[0:500]
+#X_test = X_test[0:500]
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
 # convert class vectors to binary class matrices
-Y_train = np_utils.to_categorical(y_train, nb_classes)
-Y_test = np_utils.to_categorical(y_test, nb_classes)
+Y_train = np_utils.to_categorical(y_train, nb_classes)#[0:500]
+Y_test = np_utils.to_categorical(y_test, nb_classes)#[0:500]
 
 model = Sequential()
 
@@ -45,22 +49,20 @@ model.add(Activation('relu'))
 model.add(Convolution2D(96, 3, 3))
 model.add(Activation('relu'))
 
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D((3,3), strides=(2,2)))
 
 model.add(Convolution2D(192, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
 model.add(Convolution2D(192, 3, 3))
 model.add(Activation('relu'))
 
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D((3,3), strides=(2,2)))
 
-model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
-model.add(Activation("relu"))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(192,1,1, border_mode='same', init = "orthogonal", activation = "relu"))
 
 model.add(Flatten())
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))

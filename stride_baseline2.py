@@ -33,15 +33,16 @@ modelname = "vgg4_3" #used for logging purposes
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
 #normalize images
-X_train = X_train.astype("float32")
-X_test = X_test.astype("float32")
+X_train = X_train.astype("float32")[0:500]
+X_test = X_test.astype("float32")[0:500]
+
 
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
 #one hot encode outputs
-y_train = np_utils.to_categorical(y_train)
-y_test = np_utils.to_categorical(y_test)
+y_train = np_utils.to_categorical(y_train)[0:500]
+y_test = np_utils.to_categorical(y_test)[0:500]
 num_classes = y_test.shape[1]
 
 #CALLBACKS
@@ -67,8 +68,9 @@ model.add(MaxPooling2D((3,3), strides=(2,2)))
 model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 
 model.add(Convolution2D(192,1,1, init = "orthogonal", activation = "relu"))
-model.add(Convolution2D(10,1,1, init = "orthogonal", activation = "relu"))
+#model.add(Convolution2D(10,1,1, init = "orthogonal", activation = "relu"))
 model.add(GlobalAveragePooling2D())
+model.add(Dense(10))
 model.add(Activation("softmax"))
 
 
@@ -90,14 +92,14 @@ model = model_from_json(loaded_json)
 
 # COMPILE
 epochs = 50
-batch_size = 32
+batch_size = 256
 lrate = 0.01
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
-adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer="sgd", metrics=['accuracy'])
+adam = keras.optimizers.Adam(lr=3*10**-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
-data_augmentation = True
+data_augmentation = False
 
 print model.summary()
 

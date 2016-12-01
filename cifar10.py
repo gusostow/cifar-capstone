@@ -46,7 +46,7 @@ model = Sequential()
 
 model.add(Convolution2D(96, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
-model.add(Convolution2D(96, 3, 3), border_mode='same')
+model.add(Convolution2D(96, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))

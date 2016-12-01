@@ -19,7 +19,7 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.layers.pooling import GlobalAveragePooling2D
 
-batch_size = 32
+batch_size = 256
 nb_classes = 10
 nb_epoch = 200
 data_augmentation = False
@@ -60,12 +60,18 @@ model.add(MaxPooling2D((3,3), strides=(2,2)))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 model.add(Convolution2D(192,1,1, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(10,1,1, border_mode='same', init = "orthogonal", activation = "relu"))
 
+model.add(GlobalAveragePooling2D())
+model.add(Activation("softmax"))
+
+"""
 model.add(Flatten())
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
+"""
 
 # let's train the model using SGD + momentum (how original).
 sgd = SGD(lr=0, decay=1e-6, momentum=0.9, nesterov=True)

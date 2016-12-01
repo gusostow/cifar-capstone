@@ -52,7 +52,7 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 # ************************LOAD MODEL ********************************
 
 path = "models/strd_tester.json"
-jsob_oject = open(path, "r")
+json_oject = open(path, "r")
 loaded_json = json.loads(json_object.read())
 json_object.close()
 

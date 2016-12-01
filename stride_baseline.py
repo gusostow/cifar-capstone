@@ -78,9 +78,9 @@ model.add(Dropout(0.5))
 model.add(Convolution2D(192,3,3, border_mode='same', init = "glorot_normal"))
 model.add(Activation("relu"))
 
-model.add(Convolution2D(192,1,1, border_mode='same', init = "glorot_normal"))
+model.add(Convolution2D(192,1,1, init = "glorot_normal"))
 model.add(Activation("relu"))
-model.add(Convolution2D(10,1,1, border_mode='same', init = "glorot_normal"))
+model.add(Convolution2D(10,1,1, init = "glorot_normal"))
 model.add(Activation("relu"))
 
 model.add(GlobalAveragePooling2D())
@@ -114,7 +114,7 @@ adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, 
 
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-data_augmentation = False
+data_augmentation = True
 
 print model.summary()
 
@@ -137,7 +137,7 @@ else:
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
-        zca_whitening=False,  # apply ZCA whitening
+        zca_whitening=True,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)

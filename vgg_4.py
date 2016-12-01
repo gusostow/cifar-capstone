@@ -49,14 +49,36 @@ board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=T
 csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
 
 
-# ************************LOAD MODEL ********************************
+#DEFINE MODEL
+model = Sequential()
 
+model.add(Convolution2D(96,3,3, input_shape=X_train.shape[1:], border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(96,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+
+model.add(MaxPooling2D((3, 3), strides=(2,2)))
+
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+
+model.add(MaxPooling2D((3,3), strides=(2,2)))
+
+model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+
+model.add(Convolution2D(192,1,1, init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(10,1,1, init = "orthogonal", activation = "relu"))
+model.add(GlobalAveragePooling2D())
+model.add(Activation("softmax"))
+
+
+# ************************LOAD MODEL ********************************
+"""
 path = "models/strd_tester.json"
 json_object = open(path, "r")
 loaded_json = json.loads(json_object.read())
 json_object.close()
 
 model = model_from_json(loaded_json)
+"""
 
 # ************************LOAD WEIGHTS*************************
 

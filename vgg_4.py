@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 import json
 from contextlib2 import redirect_stdout
 
@@ -18,9 +19,10 @@ from keras.layers.core import Activation
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
+from keras.layers.pooling import GlobalAveragePooling2D
 from keras.constraints import maxnorm
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
+from keras.callbacks import TensorBoard, LearningRateScheduler
 from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************

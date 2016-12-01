@@ -45,42 +45,18 @@ num_classes = y_test.shape[1]
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 
-filepath = "weights/" + modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
-#checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
 csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
 
-#DEFINE MODEL
-model = Sequential()
-model.add(ZeroPadding2D((1,1),input_shape=(32,32,3)))
-model.add(Convolution2D(64,3,3))
-model.add(Activation("relu"))
 
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+# ************************LOAD MODEL ********************************
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128,3,3))
-model.add(Activation("relu"))
+path = "models/strd_tester.json"
+jsob_oject = open(path, "r")
+loaded_json = json.loads(json_object.read())
+json_object.close()
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256,3,3))
-model.add(Activation("relu"))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(Flatten())
-
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(10, activation='softmax'))
+model = model_from_json(loaded_json)
 
 # ************************LOAD WEIGHTS*************************
 
@@ -95,22 +71,22 @@ lrate = 0.01
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer="sgd", metrics=['accuracy'])
 
 data_augmentation = True
 
 print model.summary()
 
-with open("models/" + modelname + ".json", 'wb') as fp:
-    json.dump(model.to_json(), fp)
+#with open("models/" + modelname + ".json", 'wb') as fp:
+    #json.dump(model.to_json(), fp)
 
-with open("summaries/" + modelname + '.txt', 'w') as f:
-    with redirect_stdout(f):
-        print model.summary()
+#with open("summaries/" + modelname + '.txt', 'w') as f:
+    #with redirect_stdout(f):
+        #print model.summary()
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, checkpoint, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [])
 else:
     print 'Using real-time data augmentation.'
 
@@ -134,6 +110,6 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv])
+                            callbacks = [])
 
 #model.save_weights("weights/" + modelname + "_{val_acc:.2f}" + ".hdf5")

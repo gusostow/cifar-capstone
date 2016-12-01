@@ -27,7 +27,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "strd_7" #used for logging purposes
+modelname = "strd_tester" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -107,8 +107,8 @@ data_augmentation = True
 
 print model.summary()
 
-#with open("models/" + modelname + ".json", 'wb') as fp:
-    #json.dump(model.to_json(), fp)
+with open("models/" + modelname + ".json", 'wb') as fp:
+    json.dump(model.to_json(), fp)
 
 #with open("summaries/" + modelname + '.txt', 'w') as f:
     #with redirect_stdout(f):

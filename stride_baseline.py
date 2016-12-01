@@ -58,7 +58,7 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Convolution2D(96,3,3, input_shape=X_train.shape[1:]. border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(96,3,3, input_shape=X_train.shape[1:], border_mode='same', init = "orthogonal", activation = "relu"))
 model.add(Convolution2D(96,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
 
 model.add(MaxPooling2D((3, 3), strides=(2,2)))

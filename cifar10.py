@@ -84,7 +84,7 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
-#print model.summary()
+print(model.summary())
 
 if not data_augmentation:
     print('Not using data augmentation.')

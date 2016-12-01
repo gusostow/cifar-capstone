@@ -19,7 +19,7 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.layers.pooling import GlobalAveragePooling2D
 
-batch_size = 256
+batch_size = 32
 nb_classes = 10
 nb_epoch = 200
 data_augmentation = False

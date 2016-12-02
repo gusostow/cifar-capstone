@@ -24,7 +24,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "mynet_3" #used for logging purposes
+modelname = "mynet_4" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -93,7 +93,7 @@ model = model_from_json(loaded_json)
 
 # COMPILE
 epochs = 200
-batch_size = 64
+batch_size = 32
 
 lrate = 0.01
 decay = 1e-6
@@ -126,8 +126,8 @@ else:
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=True,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.15,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.15,  # randomly shift images vertically (fraction of total height)
+        width_shift_range=0.10,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.10,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
         vertical_flip=False)  # randomly flip images
 

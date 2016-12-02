@@ -24,7 +24,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "mynet_1" #used for logging purposes
+modelname = "mynet_2" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -52,24 +52,26 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Convolution2D(32, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
+model.add(Convolution2D(32, 3, 3, border_mode='same',
+                        input_shape=X_train.shape[1:]))
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3, border_mode='same'))
+model.add(Convolution2D(32, 3, 3))
 model.add(Activation('relu'))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
 model.add(Convolution2D(64, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
+model.add(Convolution2D(64, 3, 3))
 model.add(Activation('relu'))
-
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
 model.add(Flatten())
-model.add(Dense(512, activation='relu'))
+model.add(Dense(512))
+model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(num_classes))
+model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
 

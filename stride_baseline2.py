@@ -24,22 +24,22 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "strd_9" #used for logging purposes
+modelname = "strd_10" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
 #normalize images
-X_train = X_train.astype("float32")[0:500]
-X_test = X_test.astype("float32")[0:500]
+X_train = X_train.astype("float32")
+X_test = X_test.astype("float32")
 
 
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
 #one hot encode outputs
-y_train = np_utils.to_categorical(y_train)[0:500]
-y_test = np_utils.to_categorical(y_test)[0:500]
+y_train = np_utils.to_categorical(y_train)
+y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
 #CALLBACKS
@@ -91,7 +91,7 @@ model = model_from_json(loaded_json)
 # ***********************************************************************
 
 # COMPILE
-epochs = 150
+epochs = 300
 batch_size = 256
 
 lrate = 0.01

@@ -24,7 +24,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "mynet_2" #used for logging purposes
+modelname = "mynet_3" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -40,7 +40,7 @@ X_test = X_test / 255.0
 #one hot encode outputs
 y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
-nb_classes = y_test.shape[1]
+n_classes = y_test.shape[1]
 
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
@@ -101,7 +101,7 @@ sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
 
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-data_augmentation = False
+data_augmentation = True
 
 print model.summary()
 
@@ -126,8 +126,8 @@ else:
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=True,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+        width_shift_range=0.15,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.15,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
         vertical_flip=False)  # randomly flip images
 

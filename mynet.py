@@ -40,7 +40,7 @@ X_test = X_test / 255.0
 #one hot encode outputs
 y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
-n_classes = y_test.shape[1]
+nb_classes = y_test.shape[1]
 
 #CALLBACKS
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)

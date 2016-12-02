@@ -19,10 +19,10 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.layers.pooling import GlobalAveragePooling2D
 
-batch_size = 32
+batch_size = 256
 nb_classes = 10
 nb_epoch = 200
-data_augmentation = False
+data_augmentation = True
 
 # input image dimensions
 img_rows, img_cols = 32, 32
@@ -102,10 +102,10 @@ else:
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
-        zca_whitening=False,  # apply ZCA whitening
+        zca_whitening=True,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+        width_shift_range=0,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
         vertical_flip=False)  # randomly flip images
 

@@ -16,18 +16,15 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Sequential
 from keras.models import model_from_json
 from keras.layers.core import Activation
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import Flatten
+from keras.layers import Dense, Dropout, Flatten
 from keras.layers.pooling import GlobalAveragePooling2D
-from keras.constraints import maxnorm
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.callbacks import TensorBoard, LearningRateScheduler
 from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg4_3" #used for logging purposes
+modelname = "strd_9" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -55,22 +52,25 @@ csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ",
 #DEFINE MODEL
 model = Sequential()
 
-model.add(Convolution2D(96,3,3, input_shape=X_train.shape[1:], border_mode='same', init = "orthogonal", activation = "relu"))
-model.add(Convolution2D(96,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(96, 3, 3, border_mode='same', input_shape=X_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(Convolution2D(96, 3, 3, border_mode='same'))
+model.add(Activation('relu'))
 
-model.add(MaxPooling2D((3, 3), strides=(2,2)))
+model.add(MaxPooling2D((3,3), strides=(2,2)))
 
-model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
-model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(192, 3, 3, border_mode='same'))
+model.add(Activation('relu'))
+model.add(Convolution2D(192, 3, 3, border_mode='same'))
+model.add(Activation('relu'))
 
 model.add(MaxPooling2D((3,3), strides=(2,2)))
 
 model.add(Convolution2D(192,3,3, border_mode='same', init = "orthogonal", activation = "relu"))
-model.add(Convolution2D(192,1,1, init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(192,1,1, border_mode='same', init = "orthogonal", activation = "relu"))
+model.add(Convolution2D(10,1,1, border_mode='same', init = "orthogonal", activation = "relu"))
 
-model.add(Convolution2D(10,1,1, init = "orthogonal", activation = "relu"))
 model.add(GlobalAveragePooling2D())
-model.add(Dense(10))
 model.add(Activation("softmax"))
 
 
@@ -91,13 +91,15 @@ model = model_from_json(loaded_json)
 # ***********************************************************************
 
 # COMPILE
-epochs = 50
+epochs = 150
 batch_size = 256
+
 lrate = 0.01
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
+
 adam = keras.optimizers.Adam(lr=3*10**-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
 
 data_augmentation = False
 
@@ -106,13 +108,13 @@ print model.summary()
 #with open("models/" + modelname + ".json", 'wb') as fp:
     #json.dump(model.to_json(), fp)
 
-#with open("summaries/" + modelname + '.txt', 'w') as f:
-    #with redirect_stdout(f):
-        #print model.summary()
+with open("summaries/" + modelname + '.txt', 'w') as f:
+    with redirect_stdout(f):
+        print model.summary()
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [csv, board])
 else:
     print 'Using real-time data augmentation.'
 
@@ -122,7 +124,7 @@ else:
         samplewise_center=False,  # set each sample mean to 0
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
-        zca_whitening=False,  # apply ZCA whitening
+        zca_whitening=True,  # apply ZCA whitening
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
@@ -136,6 +138,6 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [])
+                            callbacks = [csv, board])
 
 #model.save_weights("weights/" + modelname + "_{val_acc:.2f}" + ".hdf5")

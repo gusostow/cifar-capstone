@@ -25,7 +25,7 @@ from custom_callbacks.customcalls import CSVHistory
 
 # ***************\\CHANGE MODEL NAME HERE EVERY RUN//***********************
 # **************************************************************************
-modelname = "vgg2_6" #used for logging purposes
+modelname = "CNN_noaugment" #used for logging purposes
 # **************************************************************************
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -48,7 +48,7 @@ board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=T
 filepath = "weights/" + modelname + "_" + "{epoch:02d}-{val_acc:.2f}.hdf5"
 #checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=True, mode='auto')
 
-csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
+#csv = CSVHistory("csv_logs/" + modelname + ".csv", modelname, separator = " , ", append = False)
 
 #DEFINE MODEL
 model = Sequential()
@@ -72,9 +72,7 @@ model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
 
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
@@ -91,22 +89,24 @@ lrate = 0.01
 decay = lrate / epochs
 sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-data_augmentation = True
+data_augmentation = False
 
 print model.summary()
 
+"""
 with open("models/" + modelname + ".json", 'wb') as fp:
     json.dump(model.to_json(), fp)
 
 with open("summaries/" + modelname + '.txt', 'w') as f:
     with redirect_stdout(f):
         print model.summary()
+"""
 
 if not data_augmentation:
     print 'Not using data augmentation.'
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board, checkpoint, csv])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=epochs, batch_size= batch_size, callbacks = [board])
 else:
     print 'Using real-time data augmentation.'
 
@@ -130,6 +130,6 @@ else:
                             samples_per_epoch=X_train.shape[0],
                             nb_epoch=epochs,
                             validation_data=(X_test, y_test),
-                            callbacks = [board, csv])
+                            callbacks = [board])
 
-model.save_weights("weights/" + modelname + ".hdf5")
+#model.save_weights("weights/" + modelname + ".hdf5")

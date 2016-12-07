@@ -21,7 +21,7 @@ from keras.callbacks import TensorBoard
 batch_size = 32
 nb_classes = 10
 nb_epoch = 200
-data_augmentation = False
+data_augmentation = True
 
 # input image dimensions
 img_rows, img_cols = 32, 32
@@ -73,7 +73,7 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
-modelname = "baseline_CNN_noaugment"
+modelname = "baseline_CNN_augment"
 
 board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
 

@@ -1,3 +1,13 @@
+'''Train a simple deep CNN on the CIFAR10 small images dataset.
+GPU run command:
+    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cifar10_cnn.py
+It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
+(it's still underfitting at that point, though).
+Note: the data was pickled with Python 2, and some encoding issues might prevent you
+from loading it in Python 3. You might have to load it in Python 2,
+save it in a different format, load it in Python 3 and repickle it.
+'''
+
 from __future__ import print_function
 from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
@@ -10,7 +20,7 @@ from keras.utils import np_utils
 batch_size = 32
 nb_classes = 10
 nb_epoch = 200
-data_augmentation = True
+data_augmentation = False
 
 # input image dimensions
 img_rows, img_cols = 32, 32
@@ -62,13 +72,19 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
+modelname = "baseline_CNN_noaugment"
+
+board = TensorBoard(log_dir="logs/" + modelname, histogram_freq=0, write_graph=True, write_images=False)
+
+
 if not data_augmentation:
     print('Not using data augmentation.')
     model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
-              shuffle=True)
+              shuffle=True,
+              callbacks = [board])
 else:
     print('Using real-time data augmentation.')
 
@@ -94,4 +110,5 @@ else:
                         batch_size=batch_size),
                         samples_per_epoch=X_train.shape[0],
                         nb_epoch=nb_epoch,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks = [board])

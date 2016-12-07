@@ -47,69 +47,45 @@ model_4 = Sequential()
 model_5 = Sequential()
 model_6 = Sequential()
 
+model_3_batchnorm = Sequential()
+model_3_standard = Sequential()
+
 #models = [model_0, model_1, model_2, model_3, model_4, model_5, model_6]
 #modelnames = ["model_0", "model_1", "model_2", "model_3", "model_4", "model_5","model_6"]
 
-models = {"model_0": model_0,
- "model_1": model_1,
- "model_2": model_2,
- "model_3": model_3,
- "model_4": model_4,
- "model_5": model_5,
- "model_6": model_6}
+models = {"model_3_batchnorm": model_3_batchnorm,
+"model_3_standard": model_3_standard
+}
 
-#model_tuples = zip(models, modelnames)
 
 width = 512
 
-#define model_0
-model_0.add(Dense(num_classes, input_dim=3072, activation = "softmax"))
 
-#define model_1
-model_1.add(Dense(width, input_dim=3072))
-model_1.add(Dense(num_classes, activation = "softmax"))
+#define model_3_batchnorm
+model_3_batchnorm.add(Dense(width, input_dim=3072, activation = "relu"))
+model_3_batchnorm.add(BatchNormalization())
+model_3_batchnorm.add(Dense(width, activation = "relu"))
+model_3_batchnorm.add(BatchNormalization())
+model_3_batchnorm.add(Dense(width, activation = "relu"))
+model_3_batchnorm.add(BatchNormalization())
+model_3_batchnorm.add(Dense(num_classes, activation = "softmax"))
 
-#define model_2
-model_2.add(Dense(width, input_dim=3072, activation = "relu"))
-model_2.add(Dense(width, activation = "relu"))
-model_2.add(Dense(num_classes, activation = "softmax"))
+#define model_3_standard
+model_3_standard.add(Dense(width, input_dim=3072, activation = "relu"))
+model_3_standard.add(Dense(width, activation = "relu"))
+model_3_standard.add(Dense(width, activation = "relu"))
+model_3_standard.add(Dense(num_classes, activation = "softmax"))
 
-#define model_3
-model_3.add(Dense(width, input_dim=3072, activation = "relu"))
-model_3.add(Dense(width, activation = "relu"))
-model_3.add(Dense(width, activation = "relu"))
-model_3.add(Dense(num_classes, activation = "softmax"))
 
-#define model_4
-model_4.add(Dense(width, input_dim=3072, activation = "relu"))
-model_4.add(Dense(width, activation = "relu"))
-model_4.add(Dense(width, activation = "relu"))
-model_4.add(Dense(width, activation = "relu"))
-model_4.add(Dense(num_classes, activation = "softmax"))
-
-#define model_5
-model_5.add(Dense(width, input_dim=3072, activation = "relu"))
-model_5.add(Dense(width, activation = "relu"))
-model_5.add(Dense(width, activation = "relu"))
-model_5.add(Dense(width, activation = "relu"))
-model_5.add(Dense(num_classes, activation = "softmax"))
-
-#define model_6
-model_6.add(Dense(width, input_dim=3072, activation = "relu"))
-model_6.add(Dense(width, activation = "relu"))
-model_6.add(Dense(width, activation = "relu"))
-model_6.add(Dense(width, activation = "relu"))
-model_6.add(Dense(width, activation = "relu"))
-model_6.add(Dense(num_classes, activation = "softmax"))
 
 # COMPILE
 epochs = 20
 lrate = 0.01
 decay = lrate/epochs
-sgd = SGD(lr=lrate, decay = decay,momentum = 0.9, nesterov=False)
+sgd = SGD(lr=lrate, decay = decay, momentum = 0.9, nesterov=False)
 
 for model in models:
-    csv = CSVHistory("csv_logs/ffn_depthcharts.csv", model, separator = " , ", append = False)
+    csv = CSVHistory("csv_logs/batchnorm_chart.csv", model, separator = " , ", append = True)
 
     models[model].compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 

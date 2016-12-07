@@ -63,9 +63,9 @@ model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
 # let's train the model using SGD + momentum (how original).
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0.01, decay=0, momentum=0, nesterov=False)
 model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+              optimizer="sgd",
               metrics=['accuracy'])
 
 X_train = X_train.astype('float32')
